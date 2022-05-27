@@ -48,19 +48,25 @@ def total_num(client):
     return i
 
 
-def get_strava_api(secret, ID):
+def get_strava_api(client):
     all_act = []
-    client = Client(access_token=secret)
+    
     tot = total_num(client)
-
-    me = client.get_athlete(ID)
+    print(tot)
+    me = client.get_athlete()
     activities = client.get_activities()
 
     for i in trange(tot):
         df = pd.DataFrame()
         _a = activities.next()
-
-        _streams = client.get_activity_streams(_a.id, types=types)
+        _streams=None
+        try:
+            _streams = client.get_activity_streams(_a.id, types=types)
+        except:
+            print("stream error")
+            break
+        if not _streams:
+            continue
         for item in types:
             if item in _streams.keys():
                 df[item] = pd.Series(_streams[item].data, index=None)
@@ -68,8 +74,10 @@ def get_strava_api(secret, ID):
             df['act_name'] = _a.name
             df['act_type'] = _a.type
 
-        df['lat'] = map(split_lat, (df['latlng']))
-        df['lon'] = map(split_long, (df['latlng']))
+        if not 'latlng' in df.columns:
+            continue
+        df['lat'] = [i[0] for i in df['latlng']]
+        df['lon'] =[i[1] for i in df['latlng']]
         df['time'] = df['distance'] / (df['velocity_smooth'])
         df.fillna(0)
         all_act.append(df)
@@ -107,9 +115,10 @@ def get_strava_gpx():
     return all_act
 
 
-def get_data():
+def get_data(client=None):
     if os.path.isfile(save_file + '.pkl'):
-        print("Loading Data")
+        print("Loading Pickle Data")
+
         with open(save_file + '.pkl', 'rb') as fp:
             return pickle.load(fp)
     elif os.path.isdir('activities'):
@@ -124,11 +133,11 @@ def get_data():
             sys.exit()
 
         print("Downloading Data")
-        return get_strava_api(secret, ID)
+        return get_strava_api(client)
 
 if __name__ == '__main__':
     try:
-        get_data()
+        print(get_data())
         print("Done")
     except:
         print("Error in getting data")
