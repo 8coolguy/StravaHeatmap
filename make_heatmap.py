@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-from download_data import *
+from  heatmaps.download_data import *
 import pandas as pd
 import gmplot
 import sys
+import os
 try:
     import cPickle as pickle
 except:
@@ -10,7 +11,9 @@ except:
 
 
 def heatmap(client=None):
-    map_html = 'heatmap.html'
+    print(os.getcwd())
+    pass
+    map_html = 'templates/heatmaps.heatmap.html'
     sigma = 1.00
     all_act = get_data(client)
     #print(all_act)
@@ -23,7 +26,7 @@ def heatmap(client=None):
     heatmap = heatmap[heatmap['lat'] >= (center_lat - sigma * center_lat)]
     heatmap = heatmap[heatmap['lon'] >= (center_lon + sigma * center_lon)]
     heatmap = heatmap[heatmap['lon'] <= (center_lon - sigma * center_lon)]
-    center_lat, center_lon = heatmap['lat'].mean(), heatmap['lon'].mean()
+    
     print("Plotting")
     gmap = gmplot.GoogleMapPlotter(center_lat, center_lon, 13)
     gmap.heatmap(heatmap['lat'], heatmap['lon'])

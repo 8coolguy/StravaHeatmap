@@ -7,3 +7,4 @@ all_act.pkl
 *.ipynb
 strava
 *.gpx
+env/

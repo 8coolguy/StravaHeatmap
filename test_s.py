@@ -3,7 +3,7 @@ from download_data import get_api_values
 from download_data import get_strava_api
 from make_heatmap import heatmap
 import webbrowser
-import requests
+
 
 s,ids=get_api_values()
 client = Client()
@@ -14,7 +14,7 @@ authorize_url = client.authorization_url(client_id=ids, redirect_uri='http://127
 wUrl=webbrowser.open(authorize_url)
 
 # Extract the code from your webapp response
-code = "6b45eaa4ac67e8d40e258acf7d541339ea9f235d" # or whatever your framework does
+code = "b0c361b8cb87b746f7d79de7691b6be470a0c488" # or whatever your framework does
 token_response = client.exchange_code_for_token(client_id=ids, client_secret=s, code=code)
 access_token = token_response['access_token']
 refresh_token = token_response['refresh_token']

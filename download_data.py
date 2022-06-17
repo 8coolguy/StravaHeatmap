@@ -21,7 +21,7 @@ save_file = 'all_act'
 
 
 def get_api_values():
-    secret_id = pd.read_csv("api.key")
+    secret_id = pd.read_csv("heatmaps/api.key")
     return secret_id['secret'][0], secret_id['ID'][0]
 
 
