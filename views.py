@@ -15,11 +15,12 @@ def index(request):
     return render(request,'heatmaps/index.html')
 def login(request):
 
-    authorize_url = client.authorization_url(client_id=ids, redirect_uri='http://127.0.0.1:8000/heatmaps/map')  
+    authorize_url = client.authorization_url(client_id=ids, redirect_uri='http://127.0.0.1:8000/heatmaps/map', scope=["read","activity:write"])  
     return redirect(authorize_url)
 def map(request):
     code=request.GET['code']
     token_response = client.exchange_code_for_token(client_id=ids, client_secret=s, code=code)
+    print("Token Response",token_response)
     access_token = token_response['access_token']
     refresh_token = token_response['refresh_token']
     expires_at = token_response['expires_at']
